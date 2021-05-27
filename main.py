@@ -7,6 +7,10 @@ from keep_alive import keep_alive
 import imaplib
 
 def create_email_schedule_threads(func, mail):
+    """
+    Creates individual delayed threads for each race, 
+    in order to send emails in the evening of every race day. 
+    """
     now = datetime.now()
     races = get_all_races()
 
@@ -23,6 +27,7 @@ def create_email_schedule_threads(func, mail):
 
     return timers
 
+
 # Create a mail object and authenticate
 mail = imaplib.IMAP4_SSL('imap.gmail.com')
 ADDRESS, PASSWORD = os.environ['EMAIL_ADDRESS'], os.environ['EMAIL_PASSWORD']
@@ -36,10 +41,10 @@ threads = create_email_schedule_threads(generate_email, mail)
 
 # Start all the threads
 for thread in threads:
-    thread.start()
+	thread.start()
 
 keep_alive()
 
 # Start infinite checking for new subscribers
 while True:
-    update_db_and_get_subs(mail, (ADDRESS, PASSWORD))
+	update_db_and_get_subs(mail, (ADDRESS, PASSWORD))

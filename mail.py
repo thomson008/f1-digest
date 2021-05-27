@@ -7,6 +7,9 @@ import email
 from replit import db
 
 def send_email(subject, body, to, login_info):
+    """
+    Sends email with a given subject and body to a specified recipient
+    """
     ADDRESS, PASSWORD = login_info
 
     msg = EmailMessage()
@@ -16,6 +19,7 @@ def send_email(subject, body, to, login_info):
 
     msg.set_content(body)
 
+    print(f'Sending email, time: {datetime.now()}')
     with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
         smtp.ehlo()
         smtp.starttls()
@@ -25,7 +29,10 @@ def send_email(subject, body, to, login_info):
 
 
 def generate_email(mail, env):
-    print(f'Sending email, time: {datetime.now()}')
+    """
+    Generates subject and body of the email to be sent.
+    Fetches the list of subscribers and sends to all of them.
+    """
     race, results, standings = get_last_results_and_standings()
     next_race = get_next_race()
 
@@ -42,6 +49,10 @@ def generate_email(mail, env):
 
 
 def check_for_subscribers(mail, login_info):
+    """
+    Downloads a list of subscribers by inspecting the senders of current messages
+    in the mailbox.
+    """
     ADDRESS, PASSWORD = login_info
 
     try:
@@ -78,15 +89,23 @@ def check_for_subscribers(mail, login_info):
 
 subscribe_body = """
 You have succesfully subscribed to F1 Digest.
+
 You will now receive a race summary email in the evening after every Grand Prix.
 This summary will include the results and current standings.
+
 You will also get a reminder of the time, date and place of the next GP!
 
 All the best,
-Tomek
+F1 Digest
 """
 
 def update_db_and_get_subs(mail, login_info):
+    """
+    Checks if any new subsribers have appeared in the mailbox 
+    and if so, adds them to the database.
+
+    Returns the updated list of subscribers
+    """
     subscribers = check_for_subscribers(mail, login_info)
 
     db_subs = []

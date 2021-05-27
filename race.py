@@ -15,7 +15,17 @@ class Race(object):
             f"{self.time.replace('Z', ' UTC')}")
 
 
+def get_data_from_api(url):
+    response = requests.get(url).content
+    response_xml = ET.fromstring(response)
+
+    return response_xml.find('.')
+
+
 def get_all_races():
+    """
+    Creates a list of all Grand Prix in the current season.
+    """
     url = 'http://ergast.com/api/f1/current'
     response_xml = get_data_from_api(url)
     races = response_xml[0]
@@ -28,14 +38,10 @@ def get_all_races():
     return races_list
 
 
-def get_data_from_api(url):
-    response = requests.get(url).content
-    response_xml = ET.fromstring(response)
-
-    return response_xml.find('.')
-
-
 def get_next_race():
+    """
+    Finds the nearest upcoming race.
+    """
     all_races = get_all_races()
 
     for race in all_races:
@@ -44,10 +50,12 @@ def get_next_race():
         if date(year, month, day) > date.today():
             return race
 
-    return None
-
 
 def get_last_results_and_standings():
+    """
+    Returns a tuple containing the object representing the most recent GP,
+    as well as its results and the WDC standings after it.
+    """
     race, race_results = get_last_results()
     year = race.date.split('-')[0]
     standings = get_driver_standings(year, race.round)
@@ -56,6 +64,9 @@ def get_last_results_and_standings():
     
 
 def get_last_results():
+    """
+    Returns a list of individual results in the most recent GP.
+    """
     url = 'http://ergast.com/api/f1/current/last/results'
     response_xml = get_data_from_api(url)
 
@@ -77,6 +88,9 @@ def get_last_results():
 
 
 def get_driver_standings(year, round):
+    """
+    Returns a list of current driver standings in the WDC
+    """
     url = f'http://ergast.com/api/f1/{year}/{round}/driverStandings'
     response_xml = get_data_from_api(url)
     standings = response_xml[0][0]
