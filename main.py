@@ -5,6 +5,7 @@ from race import get_all_races, get_ymd
 from mail import generate_email, update_db_and_get_subs
 from keep_alive import keep_alive
 import imaplib
+import time
 
 def create_email_schedule_threads(func, mail):
     """
@@ -47,4 +48,5 @@ keep_alive()
 
 # Start infinite checking for new subscribers
 while True:
-	update_db_and_get_subs(mail, (ADDRESS, PASSWORD))
+    update_db_and_get_subs(mail, (ADDRESS, PASSWORD))
+    time.sleep(60)
