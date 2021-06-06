@@ -19,7 +19,7 @@ def send_email(subject, body, to, login_info):
 
     msg.set_content(body)
 
-    print(f'Sending email, time: {datetime.now()}')
+    print(f'Sending email to {to}, time: {datetime.now()}')
     with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
         smtp.ehlo()
         smtp.starttls()

@@ -23,7 +23,7 @@ def create_email_schedule_threads(func, mail):
         delay = (run_at - now).total_seconds()
 
         if delay >= 0:
-            timer = Timer(delay, func, [os.environ, mail])
+            timer = Timer(delay, func, [mail, os.environ])
             timers.append(timer)
 
     return timers
